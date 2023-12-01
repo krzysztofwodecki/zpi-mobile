@@ -1,58 +1,67 @@
 package com.example.gatherpoint
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import com.example.gatherpoint.databinding.ActivityMainBinding
+import android.view.View
+import android.view.animation.AnticipateInterpolator
+import androidx.core.animation.doOnEnd
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.splashscreen.SplashScreenViewProvider
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+    private var canExitSplashScreen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        //splash screen object, which you can optionally use to customize animation or
+        // keep the splash screen on screen for a longer duration
+        val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        processBootData()
 
-        setSupportActionBar(binding.toolbar)
+        splashScreen.setKeepOnScreenCondition { !canExitSplashScreen }
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        splashScreen.setOnExitAnimationListener { splashScreenView ->
+            startSplashScreenExitAnimation(splashScreenView)
         }
+
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+    private fun processBootData() = lifecycleScope.launch(Dispatchers.IO) {
+        //if user is logged in pass another fragment as a destination
+        setNavigationGraph(R.id.loginFragment)
+        canExitSplashScreen = true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+    private suspend fun setNavigationGraph(startDestination: Int) = withContext(Dispatchers.Main) {
+        val navController = findNavController(R.id.nav_host_fragment)
+        val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+        navGraph.setStartDestination(startDestination)
+        navController.graph = navGraph
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+    private fun startSplashScreenExitAnimation(splashScreenView: SplashScreenViewProvider) {
+        val slideUp = ObjectAnimator.ofFloat(
+            splashScreenView.view,
+            View.TRANSLATION_Y,
+            0f,
+            -splashScreenView.view.height.toFloat()
+        )
+        slideUp.interpolator = AnticipateInterpolator()
+        slideUp.duration = 800L
+
+        slideUp.doOnEnd { splashScreenView.remove() }
+
+        slideUp.start()
     }
 }
