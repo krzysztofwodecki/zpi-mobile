@@ -33,7 +33,7 @@ class RegistrationFragment : Fragment() {
 
     private fun navigateToDashboardScreen() {
         Prefs(requireActivity()).userLoggedPref = true
-        val action = LoginFragmentDirections.actionLoginFragmentToDashboardFragment()
+        val action = RegistrationFragmentDirections.actionRegistrationFragmentToDashboardFragment()
         findNavController().navigate(action)
     }
 

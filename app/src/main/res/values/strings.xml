@@ -50,4 +50,7 @@
     <string name="registration_welcome_title">Welcome!</string>
     <string name="registration_welcome_subtitle">Sign up to continue</string>
     <string name="all_sign_up">Sign up</string>
+    <string name="bottom_nav_menu_events">Events</string>
+    <string name="bottom_nav_menu_history">History</string>
+    <string name="bottom_nav_menu_rewards">Rewards</string>
 </resources>

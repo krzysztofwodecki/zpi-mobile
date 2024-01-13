@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.example.gatherpoint.R
 import com.example.gatherpoint.databinding.FragmentDashboardBinding
 
-class DashboardFragment: Fragment() {
+class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
@@ -23,6 +26,15 @@ class DashboardFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initBottomNavigation()
+    }
+
+    private fun initBottomNavigation() {
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.dashboardNavHost) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.bottomNavigation.setupWithNavController(navController)
     }
 
     override fun onDestroyView() {
