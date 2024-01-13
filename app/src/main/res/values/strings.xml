@@ -46,4 +46,8 @@
     <string name="all_email">Email</string>
     <string name="all_password">Password</string>
     <string name="all_login">Login</string>
+    <string name="login_no_account_label"><u>Don\'t have an account? Sign Up</u></string>
+    <string name="registration_welcome_title">Welcome!</string>
+    <string name="registration_welcome_subtitle">Sign up to continue</string>
+    <string name="all_sign_up">Sign up</string>
 </resources>
