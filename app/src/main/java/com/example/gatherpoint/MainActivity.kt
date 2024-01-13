@@ -10,6 +10,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.gatherpoint.utils.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,8 +39,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processBootData() = lifecycleScope.launch(Dispatchers.IO) {
-        //if user is logged in pass another fragment as a destination
-        setNavigationGraph(R.id.loginFragment)
+        setNavigationGraph(
+            if (Prefs(this@MainActivity).userLoggedPref) {
+                R.id.dashboardFragment
+            } else {
+                R.id.loginFragment
+            }
+        )
         canExitSplashScreen = true
     }
 

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gatherpoint.databinding.FragmentLoginBinding
+import com.example.gatherpoint.utils.Prefs
 
 class LoginFragment : Fragment() {
 
@@ -28,10 +29,19 @@ class LoginFragment : Fragment() {
         binding.noAccountLabel.setOnClickListener {
             navigateToRegistrationScreen()
         }
+        binding.loginBtn.setOnClickListener {
+            navigateToDashboardScreen()
+        }
     }
 
     private fun navigateToRegistrationScreen() {
         val action = LoginFragmentDirections.actionLoginFragmentToRegistrationFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToDashboardScreen() {
+        Prefs(requireActivity()).userLoggedPref = true
+        val action = LoginFragmentDirections.actionLoginFragmentToDashboardFragment()
         findNavController().navigate(action)
     }
 
