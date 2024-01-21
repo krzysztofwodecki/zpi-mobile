@@ -2,14 +2,14 @@ package com.example.gatherpoint
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
 import android.view.View
 import android.view.animation.AnticipateInterpolator
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.example.gatherpoint.utils.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

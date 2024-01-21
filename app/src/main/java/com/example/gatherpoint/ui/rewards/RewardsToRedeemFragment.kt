@@ -1,15 +1,15 @@
-package com.example.gatherpoint.ui
+package com.example.gatherpoint.ui.rewards
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.gatherpoint.databinding.FragmentRewardsBinding
+import com.example.gatherpoint.databinding.FragmentRewardsToRedeemBinding
 
-class RewardsFragment : Fragment() {
+class RewardsToRedeemFragment: Fragment() {
 
-    private var _binding: FragmentRewardsBinding? = null
+    private var _binding: FragmentRewardsToRedeemBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,18 +17,21 @@ class RewardsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentRewardsBinding.inflate(inflater, container, false)
+        _binding = FragmentRewardsToRedeemBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        fun newInstance() = RewardsToRedeemFragment()
     }
 
 }
