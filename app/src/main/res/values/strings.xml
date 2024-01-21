@@ -53,4 +53,7 @@
     <string name="bottom_nav_menu_events">Events</string>
     <string name="bottom_nav_menu_history">History</string>
     <string name="bottom_nav_menu_rewards">Rewards</string>
+    <string name="events_tab_saved_events_title">Saved Events</string>
+    <string name="events_tab_near_events_title">Near Events</string>
+    <string name="events_tab_my_events_title">My Events</string>
 </resources>
