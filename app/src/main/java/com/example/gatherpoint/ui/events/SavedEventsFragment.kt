@@ -47,10 +47,9 @@ class SavedEventsFragment: Fragment() {
             onEventLongClicked = { eventId ->
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(resources.getString(R.string.event_dialog_title))
-                    .setItems(arrayOf("Remove from favourites", "Delete event")) { _, which ->
+                    .setItems(arrayOf("Remove from favourites")) { _, which ->
                         when (which) {
-                            0 -> viewModel.addEventToFavourites(eventId)
-                            1 -> viewModel.deleteEvent(eventId)
+                            0 -> viewModel.removeEventToFavourites(eventId)
                         }
                     }.show()
             }

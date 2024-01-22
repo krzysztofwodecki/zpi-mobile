@@ -47,10 +47,9 @@ class NearEventsFragment : Fragment() {
             onEventLongClicked = { eventId ->
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(resources.getString(R.string.event_dialog_title))
-                    .setItems(arrayOf("Add to favourites", "Delete event")) { _, which ->
+                    .setItems(arrayOf("Add to favourites")) { _, which ->
                         when (which) {
                             0 -> viewModel.addEventToFavourites(eventId)
-                            1 -> viewModel.deleteEvent(eventId)
                         }
                     }.show()
             }
