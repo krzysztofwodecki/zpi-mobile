@@ -59,4 +59,5 @@
     <string name="rewards_tab_rewards_to_redeem_title">Rewards</string>
     <string name="rewards_tab_redeemed_rewards_title">Redeemed Rewards</string>
     <string name="event_dialog_title">Event options</string>
+    <string name="rewards_points_label">%s points</string>
 </resources>

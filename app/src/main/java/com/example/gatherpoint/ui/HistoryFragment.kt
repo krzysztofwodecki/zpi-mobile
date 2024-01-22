@@ -11,7 +11,6 @@ import com.example.gatherpoint.R
 import com.example.gatherpoint.adapters.EventsAdapter
 import com.example.gatherpoint.databinding.FragmentHistoryBinding
 import com.example.gatherpoint.network.Resource
-import com.example.gatherpoint.viewmodel.EventsViewModel
 import com.example.gatherpoint.viewmodel.HistoryViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 

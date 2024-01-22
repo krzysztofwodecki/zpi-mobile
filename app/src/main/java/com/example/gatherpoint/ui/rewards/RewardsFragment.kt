@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.gatherpoint.R
 import com.example.gatherpoint.adapters.RewardsPagerAdapter
 import com.example.gatherpoint.databinding.FragmentRewardsBinding
+import com.example.gatherpoint.viewmodel.RewardsViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 class RewardsFragment : Fragment() {
+
+    private val viewModel: RewardsViewModel by viewModels()
 
     private var _binding: FragmentRewardsBinding? = null
     private val binding get() = _binding!!

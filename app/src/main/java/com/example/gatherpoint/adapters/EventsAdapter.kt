@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gatherpoint.R
 import com.example.gatherpoint.databinding.RecyclerviewEventsItemBinding
 import com.example.gatherpoint.network.Model.Event
-import com.example.gatherpoint.utils.Utils
-import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
