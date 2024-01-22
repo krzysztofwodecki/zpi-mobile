@@ -30,6 +30,22 @@ class EventsViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    private val savedEvents = MutableLiveData<Resource<List<Model.Event>>>()
+    private val savedEventsSearchQuery = MutableLiveData("")
+
+    val savedEventsList = mediator(savedEvents, savedEventsSearchQuery).map {
+        val savedEventsResource = savedEvents.value ?: return@map null
+        val savedEventsSearchQuery = savedEventsSearchQuery.value ?: ""
+
+        if (savedEventsResource is Resource.Success) {
+            Resource.Success(savedEventsResource.data?.filter {
+                it.eventName.contains(savedEventsSearchQuery, ignoreCase = true) }
+            )
+        } else {
+            savedEventsResource
+        }
+    }
+
     fun getNearEventsList() {
         nearEvents.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
@@ -38,8 +54,19 @@ class EventsViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun getSavedEventsList() {
+        savedEvents.value = Resource.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(3000)
+            savedEvents.postValue(Resource.Success(EventProvider.getEventList()))
+        }
+    }
+
     fun setNearEventsSearchQuery(query: String) {
         nearEventsSearchQuery.value = query
+    }
+    fun setSavedEventsSearchQuery(query: String) {
+        savedEventsSearchQuery.value = query
     }
 
     fun addEventToFavourites(eventId: Long) {
@@ -47,7 +74,7 @@ class EventsViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun deleteEvent(eventId: Long) {
-
+        TODO("Not yet implemented")
     }
 
     object EventProvider {
