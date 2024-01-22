@@ -30,6 +30,22 @@ class RewardsViewModel (application: Application): AndroidViewModel(application)
         }
     }
 
+    private val redeemedRewards = MutableLiveData<Resource<List<Model.Reward>>>()
+    private val redeemedRewardsSearchQuery = MutableLiveData("")
+
+    val redeemedRewardsList = Utils.mediator(redeemedRewards, redeemedRewardsSearchQuery).map {
+        val redeemedRewardsResource = redeemedRewards.value ?: return@map null
+        val redeemedRewardsSearchQuery = redeemedRewardsSearchQuery.value ?: ""
+
+        if (redeemedRewardsResource is Resource.Success) {
+            Resource.Success(redeemedRewardsResource.data?.filter {
+                it.name.contains(redeemedRewardsSearchQuery, ignoreCase = true) }
+            )
+        } else {
+            redeemedRewardsResource
+        }
+    }
+
     fun getRewardsList() {
         rewards.value = Resource.Loading()
         viewModelScope.launch(Dispatchers.IO) {
@@ -40,6 +56,18 @@ class RewardsViewModel (application: Application): AndroidViewModel(application)
 
     fun setRewardsSearchQuery(query: String) {
         rewardsSearchQuery.value = query
+    }
+
+    fun getRedeemedRewardsList() {
+        redeemedRewards.value = Resource.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(3000)
+            redeemedRewards.postValue(Resource.Success(RewardProvider.getRewardList()))
+        }
+    }
+
+    fun setRedeemedRewardsSearchQuery(query: String) {
+        redeemedRewardsSearchQuery.value = query
     }
 
     object RewardProvider {
