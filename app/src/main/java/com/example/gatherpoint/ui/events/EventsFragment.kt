@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.gatherpoint.R
 import com.example.gatherpoint.adapters.EventsPagerAdapter
 import com.example.gatherpoint.databinding.FragmentEventsBinding
+import com.example.gatherpoint.viewmodel.EventsViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 class EventsFragment : Fragment() {
+
+    private val viewModel: EventsViewModel by viewModels()
 
     private var _binding: FragmentEventsBinding? = null
     private val binding get() = _binding!!
