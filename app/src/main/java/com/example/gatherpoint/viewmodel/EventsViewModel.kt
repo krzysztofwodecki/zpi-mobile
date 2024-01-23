@@ -8,12 +8,15 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.example.gatherpoint.network.Model
 import com.example.gatherpoint.network.Resource
+import com.example.gatherpoint.network.RetrofitHelper
 import com.example.gatherpoint.utils.Utils.mediator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class EventsViewModel(application: Application): AndroidViewModel(application) {
+class EventsViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val api = RetrofitHelper.getInstance()
 
     private val _event = MutableLiveData<Resource<Model.Event>>()
     val event: LiveData<Resource<Model.Event>> = _event
@@ -27,7 +30,8 @@ class EventsViewModel(application: Application): AndroidViewModel(application) {
 
         if (nearEventsResource is Resource.Success) {
             Resource.Success(nearEventsResource.data?.filter {
-                it.eventName.contains(nearEventsSearchQuery, ignoreCase = true) }
+                it.eventName.contains(nearEventsSearchQuery, ignoreCase = true)
+            }
             )
         } else {
             nearEventsResource
@@ -43,7 +47,8 @@ class EventsViewModel(application: Application): AndroidViewModel(application) {
 
         if (savedEventsResource is Resource.Success) {
             Resource.Success(savedEventsResource.data?.filter {
-                it.eventName.contains(savedEventsSearchQuery, ignoreCase = true) }
+                it.eventName.contains(savedEventsSearchQuery, ignoreCase = true)
+            }
             )
         } else {
             savedEventsResource
@@ -59,18 +64,19 @@ class EventsViewModel(application: Application): AndroidViewModel(application) {
 
         if (myEventsResource is Resource.Success) {
             Resource.Success(myEventsResource.data?.filter {
-                it.eventName.contains(myEventsSearchQuery, ignoreCase = true) }
+                it.eventName.contains(myEventsSearchQuery, ignoreCase = true)
+            }
             )
         } else {
             myEventsResource
         }
     }
 
-    fun getNearEventsList() {
-        nearEvents.value = Resource.Loading()
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(3000)
-            nearEvents.postValue(Resource.Success(EventProvider.getEventList()))
+    fun getNearEventsList(token: String) = viewModelScope.launch(Dispatchers.IO) {
+        nearEvents.postValue(Resource.Loading())
+        val response = api.getEvents("Bearer $token")
+        if (response.isSuccessful && response.body() != null) {
+            nearEvents.postValue(Resource.Success(response.body()!!))
         }
     }
 
@@ -93,9 +99,11 @@ class EventsViewModel(application: Application): AndroidViewModel(application) {
     fun setNearEventsSearchQuery(query: String) {
         nearEventsSearchQuery.value = query
     }
+
     fun setSavedEventsSearchQuery(query: String) {
         savedEventsSearchQuery.value = query
     }
+
     fun setMyEventsSearchQuery(query: String) {
         myEventsSearchQuery.value = query
     }

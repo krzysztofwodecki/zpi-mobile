@@ -6,11 +6,11 @@ import android.content.Context
 class Prefs(activity: Activity) {
     private val preferences = activity.getPreferences(Context.MODE_PRIVATE)
 
-    var userLoggedPref: Boolean
-        get() = preferences.getBoolean(APP_PREF_USER_LOGGED, false)
-        set(value) = preferences.edit().putBoolean(APP_PREF_USER_LOGGED, value).apply()
+    var token: String?
+        get() = preferences.getString(APP_PREF_USER_TOKEN, null)
+        set(value) = preferences.edit().putString(APP_PREF_USER_TOKEN, value).apply()
 
     companion object {
-        private const val APP_PREF_USER_LOGGED = "userLoggedPref"
+        private const val APP_PREF_USER_TOKEN = "userToken"
     }
 }

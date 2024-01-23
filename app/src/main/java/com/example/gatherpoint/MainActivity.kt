@@ -12,10 +12,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import com.example.gatherpoint.network.ApiInterface
 import com.example.gatherpoint.network.RetrofitHelper
 import com.example.gatherpoint.utils.Prefs
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -41,27 +41,11 @@ class MainActivity : AppCompatActivity() {
         splashScreen.setOnExitAnimationListener { splashScreenView ->
             startSplashScreenExitAnimation(splashScreenView)
         }
-
-        val api = RetrofitHelper.getInstance()
-        // launching a new coroutine
-        GlobalScope.launch {
-            val response = api.login()
-            if (response.isSuccessful) {
-                launch(Dispatchers.Main) {
-                    Log.d("xddd", "onCreate: ${GsonBuilder().setPrettyPrinting().create().toJson(response.body())}")
-                }
-            } else {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
     }
 
     private fun processBootData() = lifecycleScope.launch(Dispatchers.IO) {
         setNavigationGraph(
-            if (Prefs(this@MainActivity).userLoggedPref) {
+            if (Prefs(this@MainActivity).token != null) {
                 R.id.dashboardFragment
             } else {
                 R.id.loginFragment

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +13,7 @@ import com.example.gatherpoint.adapters.EventsAdapter
 import com.example.gatherpoint.databinding.FragmentNearEventsBinding
 import com.example.gatherpoint.network.Model
 import com.example.gatherpoint.network.Resource
+import com.example.gatherpoint.utils.Prefs
 import com.example.gatherpoint.viewmodel.EventsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -24,11 +24,15 @@ class NearEventsFragment : Fragment() {
     private var _binding: FragmentNearEventsBinding? = null
     private val binding get() = _binding!!
     private lateinit var eventsAdapter: EventsAdapter
+    private lateinit var token: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.getNearEventsList()
+        Prefs(requireActivity()).token?.let {
+            token = it
+            viewModel.getNearEventsList(it)
+        }
     }
 
     override fun onCreateView(

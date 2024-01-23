@@ -4,12 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
+import com.example.gatherpoint.R
 import com.example.gatherpoint.databinding.FragmentLoginBinding
+import com.example.gatherpoint.network.Resource
 import com.example.gatherpoint.utils.Prefs
+import com.example.gatherpoint.viewmodel.LoginViewModel
 
 class LoginFragment : Fragment() {
+
+    private val viewModel: LoginViewModel by navGraphViewModels(R.id.nav_graph)
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -30,7 +38,22 @@ class LoginFragment : Fragment() {
             navigateToRegistrationScreen()
         }
         binding.loginBtn.setOnClickListener {
-            navigateToDashboardScreen()
+            viewModel.login(
+                binding.emailInput.text.toString(),
+                binding.passwordInput.text.toString()
+            )
+        }
+
+        viewModel.loginState.observe(viewLifecycleOwner) { status ->
+            binding.progress.isVisible = status is Resource.Loading
+            if(status is Resource.Success) {
+                if (status.data == null) return@observe
+                Prefs(requireActivity()).token = status.data
+                navigateToDashboardScreen()
+            }
+            if(status is Resource.Error) {
+                Toast.makeText(requireContext(), "Invalid email or password", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -40,7 +63,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun navigateToDashboardScreen() {
-        Prefs(requireActivity()).userLoggedPref = true
         val action = LoginFragmentDirections.actionLoginFragmentToDashboardFragment()
         findNavController().navigate(action)
     }

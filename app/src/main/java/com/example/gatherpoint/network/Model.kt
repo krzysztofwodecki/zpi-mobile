@@ -17,4 +17,11 @@ object Model {
         val description: String,
         val value: Long
     )
+
+    data class User(
+        val id: Long,
+        val email: String,
+        val roles: String,
+        val points: Long
+    )
 }
