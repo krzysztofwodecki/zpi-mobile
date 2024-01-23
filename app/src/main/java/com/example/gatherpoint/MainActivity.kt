@@ -2,16 +2,22 @@ package com.example.gatherpoint
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.AnticipateInterpolator
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import com.example.gatherpoint.network.ApiInterface
+import com.example.gatherpoint.network.RetrofitHelper
 import com.example.gatherpoint.utils.Prefs
+import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -34,6 +40,21 @@ class MainActivity : AppCompatActivity() {
 
         splashScreen.setOnExitAnimationListener { splashScreenView ->
             startSplashScreenExitAnimation(splashScreenView)
+        }
+
+        val api = RetrofitHelper.getInstance()
+        // launching a new coroutine
+        GlobalScope.launch {
+            val response = api.login()
+            if (response.isSuccessful) {
+                launch(Dispatchers.Main) {
+                    Log.d("xddd", "onCreate: ${GsonBuilder().setPrettyPrinting().create().toJson(response.body())}")
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
     }
