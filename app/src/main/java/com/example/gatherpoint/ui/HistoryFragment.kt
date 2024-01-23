@@ -41,15 +41,15 @@ class HistoryFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         eventsAdapter = EventsAdapter(
-            onEventClicked = { eventId ->
+            onEventClicked = { event ->
                 //navigateToDetails()
             },
-            onEventLongClicked = { eventId ->
+            onEventLongClicked = { event ->
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(resources.getString(R.string.event_dialog_title))
                     .setItems(arrayOf("Add to favourites")) { _, which ->
                         when (which) {
-                            0 -> viewModel.addEventToFavourites(eventId)
+                            0 -> viewModel.addEventToFavourites(event.id)
                         }
                     }.show()
             }

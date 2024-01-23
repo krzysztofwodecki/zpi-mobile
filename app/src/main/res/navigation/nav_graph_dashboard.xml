@@ -9,7 +9,11 @@
         android:id="@+id/eventsFragment"
         android:name="com.example.gatherpoint.ui.events.EventsFragment"
         android:label="fragment_events"
-        tools:layout="@layout/fragment_events" />
+        tools:layout="@layout/fragment_events" >
+        <action
+            android:id="@+id/action_eventsFragment_to_eventDetailsFragment"
+            app:destination="@id/eventDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.example.gatherpoint.ui.HistoryFragment"
@@ -20,4 +24,17 @@
         android:name="com.example.gatherpoint.ui.rewards.RewardsFragment"
         android:label="fragment_rewards"
         tools:layout="@layout/fragment_rewards" />
+    <fragment
+        android:id="@+id/eventDetailsFragment"
+        android:name="com.example.gatherpoint.ui.events.EventDetailsFragment"
+        android:label="EventDetailsFragment" >
+        <argument
+            android:name="eventId"
+            app:argType="long"
+            android:defaultValue="-1L"/>
+        <argument
+            android:name="isOwner"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
 </navigation>

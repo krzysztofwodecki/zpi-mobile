@@ -46,4 +46,5 @@
         android:name="com.example.gatherpoint.ui.DashboardFragment"
         android:label="fragment_dashboard"
         tools:layout="@layout/fragment_dashboard" />
+
 </navigation>

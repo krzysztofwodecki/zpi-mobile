@@ -13,8 +13,8 @@ import java.util.Date
 import java.util.Locale
 
 class EventsAdapter (
-    private val onEventClicked: (eventId: Long) -> Unit,
-    private val onEventLongClicked: (eventId: Long) -> Unit
+    private val onEventClicked: (event: Event) -> Unit,
+    private val onEventLongClicked: (event: Event) -> Unit
 ) : RecyclerView.Adapter<EventsAdapter.EventViewHolder>() {
 
     private var eventsList = emptyList<Event>()
@@ -43,9 +43,9 @@ class EventsAdapter (
         private lateinit var eventItem: Event
 
         init {
-            itemView.setOnClickListener { onEventClicked.invoke(eventItem.id) }
+            itemView.setOnClickListener { onEventClicked.invoke(eventItem) }
             itemView.setOnLongClickListener {
-                onEventLongClicked.invoke(eventItem.id)
+                onEventLongClicked.invoke(eventItem)
                 return@setOnLongClickListener true
             }
         }

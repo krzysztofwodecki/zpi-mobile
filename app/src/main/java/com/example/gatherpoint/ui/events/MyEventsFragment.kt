@@ -5,18 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gatherpoint.R
 import com.example.gatherpoint.adapters.EventsAdapter
 import com.example.gatherpoint.databinding.FragmentMyEventsBinding
+import com.example.gatherpoint.network.Model
 import com.example.gatherpoint.network.Resource
 import com.example.gatherpoint.viewmodel.EventsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class MyEventsFragment: Fragment() {
+class MyEventsFragment : Fragment() {
 
-    private val viewModel: EventsViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: EventsViewModel by navGraphViewModels(R.id.nav_graph_dashboard)
 
     private var _binding: FragmentMyEventsBinding? = null
     private val binding get() = _binding!!
@@ -41,16 +43,16 @@ class MyEventsFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         eventsAdapter = EventsAdapter(
-            onEventClicked = { eventId ->
-                //navigateToDetails()
+            onEventClicked = { event ->
+                navigateToDetails(event)
             },
-            onEventLongClicked = { eventId ->
+            onEventLongClicked = { event ->
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(resources.getString(R.string.event_dialog_title))
                     .setItems(arrayOf("Add to favourites", "Delete event")) { _, which ->
                         when (which) {
-                            0 -> viewModel.addEventToFavourites(eventId)
-                            1 -> viewModel.deleteEvent(eventId)
+                            0 -> viewModel.addEventToFavourites(event.id)
+                            1 -> viewModel.deleteEvent(event.id)
                         }
                     }.show()
             }
@@ -81,6 +83,14 @@ class MyEventsFragment: Fragment() {
         binding.searchInput.searchQuery.observe(requireActivity()) {
             viewModel.setMyEventsSearchQuery(it)
         }
+    }
+
+    private fun navigateToDetails(event: Model.Event) {
+        val action = EventsFragmentDirections.actionEventsFragmentToEventDetailsFragment(
+            eventId = event.id,
+            isOwner = true
+        )
+        findNavController().navigate(action)
     }
 
     private fun showRecyclerView() {
