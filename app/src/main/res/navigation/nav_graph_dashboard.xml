@@ -9,32 +9,65 @@
         android:id="@+id/eventsFragment"
         android:name="com.example.gatherpoint.ui.events.EventsFragment"
         android:label="fragment_events"
-        tools:layout="@layout/fragment_events" >
+        tools:layout="@layout/fragment_events">
         <action
             android:id="@+id/action_eventsFragment_to_eventDetailsFragment"
-            app:destination="@id/eventDetailsFragment" />
+            app:destination="@id/eventDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.example.gatherpoint.ui.HistoryFragment"
         android:label="fragment_history"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history">
+        <action
+            android:id="@+id/action_historyFragment_to_eventDetailsFragment"
+            app:destination="@id/eventDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/rewardsFragment"
         android:name="com.example.gatherpoint.ui.rewards.RewardsFragment"
         android:label="fragment_rewards"
-        tools:layout="@layout/fragment_rewards" />
+        tools:layout="@layout/fragment_rewards">
+        <action
+            android:id="@+id/action_rewardsFragment_to_rewardDetailsFragment"
+            app:destination="@id/rewardDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/eventDetailsFragment"
         android:name="com.example.gatherpoint.ui.events.EventDetailsFragment"
-        android:label="EventDetailsFragment" >
+        android:label="EventDetailsFragment">
         <argument
             android:name="eventId"
-            app:argType="long"
-            android:defaultValue="-1L"/>
+            android:defaultValue="-1L"
+            app:argType="long" />
         <argument
             android:name="isOwner"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/rewardDetailsFragment"
+        android:name="com.example.gatherpoint.ui.rewards.RewardDetailsFragment"
+        android:label="RewardDetailsFragment">
+        <argument
+            android:name="rewardId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+        <argument
+            android:name="isRedeemed"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
 </navigation>

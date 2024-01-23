@@ -14,8 +14,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class RewardsFragment : Fragment() {
 
-    private val viewModel: RewardsViewModel by viewModels()
-
     private var _binding: FragmentRewardsBinding? = null
     private val binding get() = _binding!!
     private lateinit var rewardsPagerAdapter: RewardsPagerAdapter

@@ -2,6 +2,7 @@ package com.example.gatherpoint.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
@@ -13,6 +14,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class EventsViewModel(application: Application): AndroidViewModel(application) {
+
+    private val _event = MutableLiveData<Resource<Model.Event>>()
+    val event: LiveData<Resource<Model.Event>> = _event
 
     private val nearEvents = MutableLiveData<Resource<List<Model.Event>>>()
     private val nearEventsSearchQuery = MutableLiveData("")
@@ -106,6 +110,14 @@ class EventsViewModel(application: Application): AndroidViewModel(application) {
 
     fun deleteEvent(eventId: Long) {
         TODO("Not yet implemented")
+    }
+
+    fun getEventById(eventId: Long) {
+        _event.value = Resource.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(3000)
+            _event.postValue(Resource.Success(EventProvider.getEventList()[0]))
+        }
     }
 
     object EventProvider {

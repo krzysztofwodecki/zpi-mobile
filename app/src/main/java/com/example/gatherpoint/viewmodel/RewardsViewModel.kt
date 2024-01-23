@@ -2,6 +2,7 @@ package com.example.gatherpoint.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
@@ -13,6 +14,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class RewardsViewModel (application: Application): AndroidViewModel(application) {
+
+    private val _reward = MutableLiveData<Resource<Model.Reward>>()
+    val reward: LiveData<Resource<Model.Reward>> = _reward
 
     private val rewards = MutableLiveData<Resource<List<Model.Reward>>>()
     private val rewardsSearchQuery = MutableLiveData("")
@@ -68,6 +72,14 @@ class RewardsViewModel (application: Application): AndroidViewModel(application)
 
     fun setRedeemedRewardsSearchQuery(query: String) {
         redeemedRewardsSearchQuery.value = query
+    }
+
+    fun getRewardById(eventId: Long) {
+        _reward.value = Resource.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(3000)
+            _reward.postValue(Resource.Success(RewardProvider.getRewardList()[0]))
+        }
     }
 
     object RewardProvider {

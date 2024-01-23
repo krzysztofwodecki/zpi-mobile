@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gatherpoint.R
 import com.example.gatherpoint.adapters.EventsAdapter
 import com.example.gatherpoint.databinding.FragmentHistoryBinding
+import com.example.gatherpoint.network.Model
 import com.example.gatherpoint.network.Resource
+import com.example.gatherpoint.ui.events.EventsFragmentDirections
 import com.example.gatherpoint.viewmodel.HistoryViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -42,7 +45,7 @@ class HistoryFragment: Fragment() {
 
         eventsAdapter = EventsAdapter(
             onEventClicked = { event ->
-                //navigateToDetails()
+                navigateToDetails(event)
             },
             onEventLongClicked = { event ->
                 MaterialAlertDialogBuilder(requireContext())
@@ -79,6 +82,14 @@ class HistoryFragment: Fragment() {
         binding.searchInput.searchQuery.observe(requireActivity()) {
             viewModel.setHistoryEventsSearchQuery(it)
         }
+    }
+
+    private fun navigateToDetails(event: Model.Event) {
+        val action = HistoryFragmentDirections.actionHistoryFragmentToEventDetailsFragment(
+            eventId = event.id,
+            isOwner = false
+        )
+        findNavController().navigate(action)
     }
 
     private fun showRecyclerView() {

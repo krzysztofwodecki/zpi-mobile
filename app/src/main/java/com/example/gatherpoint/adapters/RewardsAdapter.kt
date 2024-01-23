@@ -10,7 +10,7 @@ import com.example.gatherpoint.databinding.RecyclerviewRewardsItemBinding
 import com.example.gatherpoint.network.Model
 
 class RewardsAdapter (
-    private val onRewardClicked: (eventId: Long) -> Unit
+    private val onRewardClicked: (reward: Model.Reward) -> Unit
 ) : RecyclerView.Adapter<RewardsAdapter.RewardViewHolder>() {
 
     private var rewardsList = emptyList<Model.Reward>()
@@ -39,7 +39,7 @@ class RewardsAdapter (
         private lateinit var rewardItem: Model.Reward
 
         init {
-            itemView.setOnClickListener { onRewardClicked.invoke(rewardItem.id) }
+            itemView.setOnClickListener { onRewardClicked.invoke(rewardItem) }
         }
 
         fun bind(rewardItem: Model.Reward) {

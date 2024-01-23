@@ -13,6 +13,7 @@
         tools:context=".ui.events.EventDetailsFragment">
 
         <ImageView
+            android:id="@+id/backButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="10dp"
@@ -20,7 +21,7 @@
             android:src="@drawable/baseline_arrow_back_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="?colorOnBackground" />
+            app:tint="?colorOutline" />
 
         <ImageView
             android:id="@+id/backgroundImage"

@@ -64,4 +64,8 @@
     <string name="all_name">Name</string>
     <string name="all_location">Location</string>
     <string name="all_description">Description</string>
+    <string name="reward_details_redeem_button_text">Redeem for %s points</string>
+    <string name="snackbar_redeemed_reward_message">Reward redeemed</string>
+    <string name="all_ok">Ok</string>
+    <string name="snackbar_points_gained_message">Congratulations! You gained %s points.</string>
 </resources>

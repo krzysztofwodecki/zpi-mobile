@@ -10,7 +10,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.example.gatherpoint.R
 import com.example.gatherpoint.databinding.FragmentEventDetailsBinding
+import com.example.gatherpoint.network.Model
+import com.example.gatherpoint.network.Resource
 import com.example.gatherpoint.viewmodel.EventsViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlin.properties.Delegates
 
 class EventDetailsFragment : Fragment() {
@@ -27,6 +30,8 @@ class EventDetailsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         eventId = args.eventId
         isOwner = args.isOwner
+
+        viewModel.getEventById(eventId)
     }
 
     override fun onCreateView(
@@ -42,8 +47,39 @@ class EventDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         handleEventStatus()
 
-        binding.backgroundImage.setOnClickListener {
+        viewModel.event.observe(viewLifecycleOwner) { status ->
+            when (status) {
+                is Resource.Loading -> {
+
+                }
+                is Resource.Success -> {
+                    status.data?.let {
+                        fillEventDetails(it)
+                    }
+                }
+                else -> {}
+            }
+        }
+
+        binding.attendBtn.setOnClickListener {
+            it.visibility = View.GONE
+            Snackbar.make(
+                binding.root,
+                resources.getString(R.string.snackbar_points_gained_message, "200"),
+                Snackbar.LENGTH_SHORT
+            ).setAction("OK") {}.show()
+        }
+
+        binding.backButton.setOnClickListener {
             findNavController().popBackStack()
+        }
+    }
+
+    private fun fillEventDetails(event: Model.Event) {
+        with(binding) {
+            listOf(title, titleInput).forEach { it.text = event.eventName }
+            listOf(info, infoInput).forEach { it.text = event.location }
+            listOf(description, descriptionInput).forEach { it.text = event.description }
         }
     }
 

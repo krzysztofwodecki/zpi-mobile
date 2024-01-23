@@ -6,15 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.gatherpoint.R
 import com.example.gatherpoint.adapters.RewardsAdapter
 import com.example.gatherpoint.databinding.FragmentRewardsToRedeemBinding
+import com.example.gatherpoint.network.Model
 import com.example.gatherpoint.network.Resource
 import com.example.gatherpoint.viewmodel.RewardsViewModel
 
 class RewardsToRedeemFragment : Fragment() {
 
-    private val viewModel: RewardsViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: RewardsViewModel by navGraphViewModels(R.id.nav_graph_dashboard)
 
     private var _binding: FragmentRewardsToRedeemBinding? = null
     private val binding get() = _binding!!
@@ -40,7 +44,7 @@ class RewardsToRedeemFragment : Fragment() {
 
         rewardsAdapter = RewardsAdapter(
             onRewardClicked = { rewardId ->
-                //navigateToDetails()
+                navigateToDetails(rewardId)
             }
         )
         binding.rewardsList.apply {
@@ -68,6 +72,14 @@ class RewardsToRedeemFragment : Fragment() {
         binding.searchInput.searchQuery.observe(requireActivity()) {
             viewModel.setRewardsSearchQuery(it)
         }
+    }
+
+    private fun navigateToDetails(reward: Model.Reward) {
+        val action = RewardsFragmentDirections.actionRewardsFragmentToRewardDetailsFragment(
+            rewardId = reward.id,
+            isRedeemed = false
+        )
+        findNavController().navigate(action)
     }
 
     private fun showRecyclerView() {
