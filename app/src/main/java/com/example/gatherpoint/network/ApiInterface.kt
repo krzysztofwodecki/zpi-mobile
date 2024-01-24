@@ -6,6 +6,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiInterface {
     @POST("/auth/login")
@@ -21,6 +23,23 @@ interface ApiInterface {
     @GET("/events")
     suspend fun getEvents(
         @Header("Authorization") token: String,
+    ) : Response<List<Model.Event>>
+
+    @GET("/events/liked")
+    suspend fun getSavedEvents(
+        @Header("Authorization") token: String,
+    ) : Response<List<Model.Event>>
+
+    @GET("/events/created/{creatorId}")
+    suspend fun getMyEvents(
+        @Header("Authorization") token: String,
+        @Path("creatorId") creatorId: Long,
+    ) : Response<List<Model.Event>>
+
+    @GET("/attendance/history")
+    suspend fun getAttendanceHistory(
+        @Header("Authorization") token: String,
+        @Query("userId") userId: Long
     ) : Response<List<Model.Event>>
 
     @GET("/auth/user")

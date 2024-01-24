@@ -13,9 +13,10 @@ import com.example.gatherpoint.adapters.EventsAdapter
 import com.example.gatherpoint.databinding.FragmentHistoryBinding
 import com.example.gatherpoint.network.Model
 import com.example.gatherpoint.network.Resource
-import com.example.gatherpoint.ui.events.EventsFragmentDirections
+import com.example.gatherpoint.utils.Prefs
 import com.example.gatherpoint.viewmodel.HistoryViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlin.properties.Delegates
 
 class HistoryFragment: Fragment() {
 
@@ -25,10 +26,17 @@ class HistoryFragment: Fragment() {
     private val binding get() = _binding!!
     private lateinit var eventsAdapter: EventsAdapter
 
+    private lateinit var token: String
+    private var userId by Delegates.notNull<Long>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.getHistoryEventsList()
+        Prefs(requireActivity()).let { prefs ->
+            token = prefs.token!!
+            userId = prefs.userId
+            viewModel.getHistoryEventsList(token, userId)
+        }
     }
 
     override fun onCreateView(

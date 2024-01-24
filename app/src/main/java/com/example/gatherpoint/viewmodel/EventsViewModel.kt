@@ -80,19 +80,19 @@ class EventsViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun getSavedEventsList() {
-        savedEvents.value = Resource.Loading()
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(3000)
-            savedEvents.postValue(Resource.Success(EventProvider.getEventList()))
+    fun getSavedEventsList(token: String) = viewModelScope.launch(Dispatchers.IO) {
+        savedEvents.postValue(Resource.Loading())
+        val response = api.getSavedEvents("Bearer $token")
+        if (response.isSuccessful && response.body() != null) {
+            savedEvents.postValue(Resource.Success(response.body()!!))
         }
     }
 
-    fun getMyEventsList() {
-        myEvents.value = Resource.Loading()
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(3000)
-            myEvents.postValue(Resource.Success(EventProvider.getEventList()))
+    fun getMyEventsList(token: String, userId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        myEvents.postValue(Resource.Loading())
+        val response = api.getMyEvents("Bearer $token", userId)
+        if (response.isSuccessful && response.body() != null) {
+            myEvents.postValue(Resource.Success(response.body()!!))
         }
     }
 

@@ -13,8 +13,10 @@ import com.example.gatherpoint.adapters.EventsAdapter
 import com.example.gatherpoint.databinding.FragmentMyEventsBinding
 import com.example.gatherpoint.network.Model
 import com.example.gatherpoint.network.Resource
+import com.example.gatherpoint.utils.Prefs
 import com.example.gatherpoint.viewmodel.EventsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlin.properties.Delegates
 
 class MyEventsFragment : Fragment() {
 
@@ -23,11 +25,17 @@ class MyEventsFragment : Fragment() {
     private var _binding: FragmentMyEventsBinding? = null
     private val binding get() = _binding!!
     private lateinit var eventsAdapter: EventsAdapter
+    private lateinit var token: String
+    private var userId by Delegates.notNull<Long>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.getMyEventsList()
+        Prefs(requireActivity()).let {prefs ->
+            token = prefs.token!!
+            userId = prefs.userId
+            viewModel.getMyEventsList(token, userId)
+        }
     }
 
     override fun onCreateView(

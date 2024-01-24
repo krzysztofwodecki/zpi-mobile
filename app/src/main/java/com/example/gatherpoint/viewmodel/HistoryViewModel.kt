@@ -7,12 +7,14 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.example.gatherpoint.network.Model
 import com.example.gatherpoint.network.Resource
+import com.example.gatherpoint.network.RetrofitHelper
 import com.example.gatherpoint.utils.Utils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HistoryViewModel (application: Application): AndroidViewModel(application) {
+
+    private val api = RetrofitHelper.getInstance()
 
     private val historyEvents = MutableLiveData<Resource<List<Model.Event>>>()
     private val historyEventsSearchQuery = MutableLiveData("")
@@ -30,11 +32,11 @@ class HistoryViewModel (application: Application): AndroidViewModel(application)
         }
     }
 
-    fun getHistoryEventsList() {
-        historyEvents.value = Resource.Loading()
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(3000)
-            historyEvents.postValue(Resource.Success(EventsViewModel.EventProvider.getEventList()))
+    fun getHistoryEventsList(token: String, userId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        historyEvents.postValue(Resource.Loading())
+        val response = api.getAttendanceHistory("Bearer $token", userId)
+        if (response.isSuccessful && response.body() != null) {
+            historyEvents.postValue(Resource.Success(response.body()!!))
         }
     }
 
