@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,7 +59,7 @@ class SavedEventsFragment: Fragment() {
                     .setTitle(resources.getString(R.string.event_dialog_title))
                     .setItems(arrayOf("Remove from favourites")) { _, which ->
                         when (which) {
-                            0 -> viewModel.removeEventToFavourites(event.id)
+                            0 -> viewModel.removeEventFromFavourites(token, event.id)
                         }
                     }.show()
             }

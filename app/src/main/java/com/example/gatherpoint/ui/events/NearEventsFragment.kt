@@ -56,7 +56,7 @@ class NearEventsFragment : Fragment() {
                     .setTitle(resources.getString(R.string.event_dialog_title))
                     .setItems(arrayOf("Add to favourites")) { _, which ->
                         when (which) {
-                            0 -> viewModel.addEventToFavourites(event.id)
+                            0 -> viewModel.addEventToFavourites(token, event.id)
                         }
                     }.show()
             }

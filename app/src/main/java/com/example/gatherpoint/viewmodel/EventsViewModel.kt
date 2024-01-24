@@ -21,6 +21,9 @@ class EventsViewModel(application: Application) : AndroidViewModel(application) 
     private val _event = MutableLiveData<Resource<Model.Event>?>()
     val event: LiveData<Resource<Model.Event>?> = _event
 
+    private val _eventActionStatus = MutableLiveData<String?>()
+    val eventActionStatus: LiveData<String?> = _eventActionStatus
+
     private val _eventDetailsStatus = MutableLiveData<Resource<Model.Event>?>()
     val eventDetailsStatus: LiveData<Resource<Model.Event>?> = _eventDetailsStatus
 
@@ -111,17 +114,43 @@ class EventsViewModel(application: Application) : AndroidViewModel(application) 
         myEventsSearchQuery.value = query
     }
 
-    fun addEventToFavourites(eventId: Long) {
-        TODO("Not yet implemented")
+    fun addEventToFavourites(token: String, eventId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        val response = api.addEventToFavourites("Bearer $token", eventId)
+        if (response.isSuccessful) {
+            _eventActionStatus.postValue("Event added to saved")
+            getSavedEventsList(token)
+        } else {
+            _eventActionStatus.postValue("Cannot add event to saved")
+        }
     }
 
-    fun removeEventToFavourites(eventId: Long) {
-        TODO("Not yet implemented")
+    fun clearEventActionStatus() {
+        _eventActionStatus.value = null
     }
 
-    fun deleteEvent(eventId: Long) {
-        TODO("Not yet implemented")
-    }
+    fun removeEventFromFavourites(token: String, eventId: Long) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = api.removeItemFromFavourites("Bearer $token", eventId)
+            if (response.isSuccessful) {
+                _eventActionStatus.postValue("Event removed from saved")
+                getSavedEventsList(token)
+            } else {
+                _eventActionStatus.postValue("Cannot remove item from saved")
+            }
+        }
+
+    fun deleteEvent(token: String, userId: Long, eventId: Long) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = api.deleteEvent("Bearer $token", eventId)
+            if (response.isSuccessful) {
+                _eventActionStatus.postValue("Event deleted")
+                getSavedEventsList(token)
+                getNearEventsList(token)
+                getMyEventsList(token, userId)
+            } else {
+                _eventActionStatus.postValue("Cannot delete event")
+            }
+        }
 
     fun getEventById(token: String, eventId: Long) = viewModelScope.launch(Dispatchers.IO) {
         _event.postValue(Resource.Loading())

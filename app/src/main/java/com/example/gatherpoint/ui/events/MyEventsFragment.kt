@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
@@ -59,8 +60,8 @@ class MyEventsFragment : Fragment() {
                     .setTitle(resources.getString(R.string.event_dialog_title))
                     .setItems(arrayOf("Add to favourites", "Delete event")) { _, which ->
                         when (which) {
-                            0 -> viewModel.addEventToFavourites(event.id)
-                            1 -> viewModel.deleteEvent(event.id)
+                            0 -> viewModel.addEventToFavourites(token, event.id)
+                            1 -> viewModel.deleteEvent(token, userId, event.id)
                         }
                     }.show()
             }
@@ -73,6 +74,13 @@ class MyEventsFragment : Fragment() {
         binding.eventsList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventsAdapter
+        }
+
+        viewModel.eventActionStatus.observe(viewLifecycleOwner) { message ->
+            message?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.clearEventActionStatus()
+            }
         }
 
         viewModel.myEventsList.observe(viewLifecycleOwner) { status ->

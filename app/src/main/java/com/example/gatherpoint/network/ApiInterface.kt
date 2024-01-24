@@ -3,6 +3,7 @@ package com.example.gatherpoint.network
 import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -65,5 +66,23 @@ interface ApiInterface {
         @Header("Authorization") token: String,
         @Path("id") eventId: Long,
         @Body eventJson: JsonObject
+    ) : Response<Model.Event>
+
+    @POST("/events/{id}/like")
+    suspend fun addEventToFavourites(
+        @Header("Authorization") token: String,
+        @Path("id") eventId: Long
+    ) : Response<Model.Event>
+
+    @DELETE("/events/{id}/like")
+    suspend fun removeItemFromFavourites(
+        @Header("Authorization") token: String,
+        @Path("id") eventId: Long
+    ) : Response<Any>
+
+    @DELETE("/events/{id}")
+    suspend fun deleteEvent(
+        @Header("Authorization") token: String,
+        @Path("id") eventId: Long
     ) : Response<Model.Event>
 }
