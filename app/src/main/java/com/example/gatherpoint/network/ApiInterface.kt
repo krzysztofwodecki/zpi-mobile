@@ -6,6 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -56,6 +57,13 @@ interface ApiInterface {
     @POST("/events")
     suspend fun addEvent(
         @Header("Authorization") token: String,
+        @Body eventJson: JsonObject
+    ) : Response<Model.Event>
+
+    @PUT("/events/{id}")
+    suspend fun editEvent(
+        @Header("Authorization") token: String,
+        @Path("id") eventId: Long,
         @Body eventJson: JsonObject
     ) : Response<Model.Event>
 }

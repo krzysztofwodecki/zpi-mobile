@@ -101,12 +101,15 @@ class EventDetailsFragment : Fragment() {
                 is Resource.Success -> {
                     status.data?.let {
                         Toast.makeText(requireContext(), "Event saved!", Toast.LENGTH_SHORT).show()
+                        viewModel.clearEventStatus()
                         findNavController().popBackStack()
                     }
                 }
-                else -> {
+                is Resource.Error -> {
                     Toast.makeText(requireContext(), "Cannot save event", Toast.LENGTH_SHORT).show()
+                    viewModel.clearEventStatus()
                 }
+                else -> {}
             }
         }
 

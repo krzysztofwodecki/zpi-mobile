@@ -12,7 +12,6 @@ import com.example.gatherpoint.network.RetrofitHelper
 import com.example.gatherpoint.utils.Utils.mediator
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class EventsViewModel(application: Application) : AndroidViewModel(application) {
@@ -174,7 +173,26 @@ class EventsViewModel(application: Application) : AndroidViewModel(application) 
         date: String?
     ) = viewModelScope.launch(Dispatchers.IO) {
         if (date == null) return@launch
+        _eventDetailsStatus.postValue(Resource.Loading())
 
+        val eventJson = JsonObject().apply {
+            addProperty("eventName", title)
+            addProperty("eventDateTime", date)
+            addProperty("location", location)
+            addProperty("description", description)
+        }
+        val response = api.editEvent("Bearer $token", eventId, eventJson)
+        if (response.isSuccessful && response.body() != null) {
+            _eventDetailsStatus.postValue(Resource.Success(response.body()!!))
+            getMyEventsList(token, userId)
+            getNearEventsList(token)
+        } else {
+            _eventDetailsStatus.postValue(Resource.Error("Cannot edit event"))
+        }
+    }
+
+    fun clearEventStatus() {
+        _eventDetailsStatus.value = null
     }
 
     object EventProvider {

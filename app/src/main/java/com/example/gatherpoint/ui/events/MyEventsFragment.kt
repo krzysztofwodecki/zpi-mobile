@@ -100,7 +100,7 @@ class MyEventsFragment : Fragment() {
     private fun navigateToDetails(event: Model.Event? = null) {
         val action = EventsFragmentDirections.actionEventsFragmentToEventDetailsFragment(
             eventId = event?.id ?: -1L,
-            isOwner = userId == event?.id
+            isOwner = userId == event?.creatorId
         )
         findNavController().navigate(action)
     }

@@ -62,7 +62,7 @@ class EventsAdapter (
                 val outputFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
                 val outputDateString: String = outputFormat.format(date)
                 info.text = outputDateString + ", " + eventItem.location
-                description.text = itemView.context.getString(R.string.lorem_ipsum)
+                description.text = eventItem.description
             }
         }
     }
