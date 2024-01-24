@@ -8,20 +8,24 @@ import androidx.lifecycle.viewModelScope
 import com.example.gatherpoint.network.Model
 import com.example.gatherpoint.network.Resource
 import com.example.gatherpoint.network.RetrofitHelper
+import com.example.gatherpoint.utils.Prefs
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.coroutineContext
 
 class LoginViewModel (application: Application): AndroidViewModel(application) {
 
     private val api = RetrofitHelper.getInstance()
 
-    private val _loginState = MutableLiveData<Resource<String>>()
-    val loginState: LiveData<Resource<String>> = _loginState
+    private val _loginState = MutableLiveData<Resource<String>?>(null)
+    val loginState: LiveData<Resource<String>?> = _loginState
 
     private val _registrationState = MutableLiveData<Resource<Model.User?>>()
     val registrationState: LiveData<Resource<Model.User?>> = _registrationState
-    fun login(email: String, password: String) = viewModelScope.launch(Dispatchers.IO) {
+
+    fun login(email: String, password: String, prefs: Prefs) = viewModelScope.launch(Dispatchers.IO) {
         _loginState.postValue(Resource.Loading())
 
         val loginJson = JsonObject().apply {
@@ -29,10 +33,23 @@ class LoginViewModel (application: Application): AndroidViewModel(application) {
             addProperty("password", password)
         }
         val response = api.login(loginJson)
-        if (response.isSuccessful && response.body() != null) {
-            _loginState.postValue(Resource.Success(response.body().toString()))
+        if (response.isSuccessful) {
+            val token = response.body()?.toString() ?: return@launch
+            getUserInfo(token, prefs)
         } else {
             _loginState.postValue(Resource.Error("Invalid email or password"))
+        }
+    }
+
+    private suspend fun getUserInfo(token: String, prefs: Prefs) = withContext(coroutineContext) {
+        val response = api.getUser("Bearer $token")
+        if (response.isSuccessful) {
+            val user = response.body() ?: return@withContext
+            prefs.token = token
+            prefs.userId = user.id
+            _loginState.postValue(Resource.Success(token))
+        } else {
+            _loginState.postValue(Resource.Error("Cannot get user info"))
         }
     }
 
@@ -49,6 +66,10 @@ class LoginViewModel (application: Application): AndroidViewModel(application) {
         } else {
             _registrationState.postValue(Resource.Error("Cannot register this user"))
         }
+    }
+
+    fun clearLoginStatus() {
+        _loginState.value = null
     }
 
 }

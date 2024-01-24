@@ -40,7 +40,8 @@ class LoginFragment : Fragment() {
         binding.loginBtn.setOnClickListener {
             viewModel.login(
                 binding.emailInput.text.toString(),
-                binding.passwordInput.text.toString()
+                binding.passwordInput.text.toString(),
+                Prefs(requireActivity())
             )
         }
 
@@ -48,11 +49,11 @@ class LoginFragment : Fragment() {
             binding.progress.isVisible = status is Resource.Loading
             if(status is Resource.Success) {
                 if (status.data == null) return@observe
-                Prefs(requireActivity()).token = status.data
                 navigateToDashboardScreen()
             }
             if(status is Resource.Error) {
                 Toast.makeText(requireContext(), "Invalid email or password", Toast.LENGTH_SHORT).show()
+                viewModel.clearLoginStatus()
             }
         }
     }

@@ -22,4 +22,9 @@ interface ApiInterface {
     suspend fun getEvents(
         @Header("Authorization") token: String,
     ) : Response<List<Model.Event>>
+
+    @GET("/auth/user")
+    suspend fun getUser(
+        @Header("Authorization") token: String,
+    ) : Response<Model.User>
 }
