@@ -68,4 +68,6 @@
     <string name="snackbar_redeemed_reward_message">Reward redeemed</string>
     <string name="all_ok">Ok</string>
     <string name="snackbar_points_gained_message">Congratulations! You gained %s points.</string>
+    <string name="date_button_default_text">Select date</string>
+    <string name="time_button_default_text">Select time</string>
 </resources>

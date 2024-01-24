@@ -10,6 +10,7 @@ import com.example.gatherpoint.network.Model
 import com.example.gatherpoint.network.Resource
 import com.example.gatherpoint.network.RetrofitHelper
 import com.example.gatherpoint.utils.Utils.mediator
+import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,8 +19,11 @@ class EventsViewModel(application: Application) : AndroidViewModel(application) 
 
     private val api = RetrofitHelper.getInstance()
 
-    private val _event = MutableLiveData<Resource<Model.Event>>()
-    val event: LiveData<Resource<Model.Event>> = _event
+    private val _event = MutableLiveData<Resource<Model.Event>?>()
+    val event: LiveData<Resource<Model.Event>?> = _event
+
+    private val _eventDetailsStatus = MutableLiveData<Resource<Model.Event>?>()
+    val eventDetailsStatus: LiveData<Resource<Model.Event>?> = _eventDetailsStatus
 
     private val nearEvents = MutableLiveData<Resource<List<Model.Event>>>()
     private val nearEventsSearchQuery = MutableLiveData("")
@@ -120,12 +124,57 @@ class EventsViewModel(application: Application) : AndroidViewModel(application) 
         TODO("Not yet implemented")
     }
 
-    fun getEventById(eventId: Long) {
-        _event.value = Resource.Loading()
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(3000)
-            _event.postValue(Resource.Success(EventProvider.getEventList()[0]))
+    fun getEventById(token: String, eventId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        _event.postValue(Resource.Loading())
+        val response = api.getEvent("Bearer $token", eventId)
+        if (response.isSuccessful && response.body() != null) {
+            _event.postValue(Resource.Success(response.body()!!))
         }
+    }
+
+    fun clearEvent() {
+        _event.value = null
+    }
+
+    fun addEvent(
+        token: String,
+        userId: Long,
+        title: String,
+        location: String,
+        description: String,
+        date: String?
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        if (date == null) return@launch
+        _eventDetailsStatus.postValue(Resource.Loading())
+
+        val eventJson = JsonObject().apply {
+            addProperty("creatorId", userId)
+            addProperty("eventName", title)
+            addProperty("eventDateTime", date)
+            addProperty("location", location)
+            addProperty("description", description)
+        }
+        val response = api.addEvent("Bearer $token", eventJson)
+        if (response.isSuccessful && response.body() != null) {
+            _eventDetailsStatus.postValue(Resource.Success(response.body()!!))
+            getMyEventsList(token, userId)
+            getNearEventsList(token)
+        } else {
+            _eventDetailsStatus.postValue(Resource.Error("Cannot create event"))
+        }
+    }
+
+    fun editEvent(
+        token: String,
+        eventId: Long,
+        userId: Long,
+        title: String,
+        location: String,
+        description: String,
+        date: String?
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        if (date == null) return@launch
+
     }
 
     object EventProvider {

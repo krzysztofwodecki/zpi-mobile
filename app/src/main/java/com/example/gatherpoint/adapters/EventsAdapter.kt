@@ -11,6 +11,7 @@ import com.example.gatherpoint.network.Model.Event
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class EventsAdapter (
     private val onEventClicked: (event: Event) -> Unit,
@@ -56,6 +57,7 @@ class EventsAdapter (
             with(binding) {
                 title.text = eventItem.eventName
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.getDefault())
+                inputFormat.timeZone = TimeZone.getTimeZone("UTC")
                 val date: Date = inputFormat.parse(eventItem.eventDateTime) ?: Date()
                 val outputFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
                 val outputDateString: String = outputFormat.format(date)

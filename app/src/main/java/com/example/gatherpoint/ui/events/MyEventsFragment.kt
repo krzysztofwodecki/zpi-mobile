@@ -66,6 +66,10 @@ class MyEventsFragment : Fragment() {
             }
         )
 
+        binding.createEventButton.setOnClickListener {
+            navigateToDetails()
+        }
+
         binding.eventsList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = eventsAdapter
@@ -93,10 +97,10 @@ class MyEventsFragment : Fragment() {
         }
     }
 
-    private fun navigateToDetails(event: Model.Event) {
+    private fun navigateToDetails(event: Model.Event? = null) {
         val action = EventsFragmentDirections.actionEventsFragmentToEventDetailsFragment(
-            eventId = event.id,
-            isOwner = true
+            eventId = event?.id ?: -1L,
+            isOwner = userId == event?.id
         )
         findNavController().navigate(action)
     }

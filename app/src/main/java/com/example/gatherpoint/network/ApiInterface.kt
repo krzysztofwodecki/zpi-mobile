@@ -42,8 +42,20 @@ interface ApiInterface {
         @Query("userId") userId: Long
     ) : Response<List<Model.Event>>
 
+    @GET("/events/{id}")
+    suspend fun getEvent(
+        @Header("Authorization") token: String,
+        @Path("id") eventId: Long,
+    ) : Response<Model.Event>
+
     @GET("/auth/user")
     suspend fun getUser(
         @Header("Authorization") token: String,
     ) : Response<Model.User>
+
+    @POST("/events")
+    suspend fun addEvent(
+        @Header("Authorization") token: String,
+        @Body eventJson: JsonObject
+    ) : Response<Model.Event>
 }
