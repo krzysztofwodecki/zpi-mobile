@@ -10,16 +10,15 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.example.gatherpoint.R
-import com.example.gatherpoint.databinding.FragmentLoginBinding
+import com.example.gatherpoint.databinding.FragmentRegistrationBinding
 import com.example.gatherpoint.network.Resource
-import com.example.gatherpoint.utils.Prefs
 import com.example.gatherpoint.viewmodel.LoginViewModel
 
-class LoginFragment : Fragment() {
+class RegistrationFragment : Fragment() {
 
     private val viewModel: LoginViewModel by navGraphViewModels(R.id.nav_graph)
 
-    private var _binding: FragmentLoginBinding? = null
+    private var _binding: FragmentRegistrationBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -27,45 +26,36 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.noAccountLabel.setOnClickListener {
-            navigateToRegistrationScreen()
-        }
-        binding.loginBtn.setOnClickListener {
-            viewModel.login(
+        binding.registerButton.setOnClickListener {
+            viewModel.register(
                 binding.emailInput.text.toString(),
-                binding.passwordInput.text.toString(),
-                Prefs(requireActivity())
+                binding.passwordInput.text.toString()
             )
         }
 
-        viewModel.loginState.observe(viewLifecycleOwner) { status ->
+        viewModel.registrationState.observe(viewLifecycleOwner) { status ->
             binding.progress.isVisible = status is Resource.Loading
-            if(status is Resource.Success) {
+            if (status is Resource.Success) {
                 if (status.data == null) return@observe
-                navigateToDashboardScreen()
+                Toast.makeText(requireContext(), "Account created", Toast.LENGTH_SHORT).show()
+                navigateToLoginScreen()
             }
-            if(status is Resource.Error) {
-                Toast.makeText(requireContext(), "Invalid email or password", Toast.LENGTH_SHORT).show()
-                viewModel.clearLoginStatus()
+            if (status is Resource.Error) {
+                Toast.makeText(requireContext(), "Cannot create an account", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
 
-    private fun navigateToRegistrationScreen() {
-        val action = LoginFragmentDirections.actionLoginFragmentToRegistrationFragment()
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToDashboardScreen() {
-        val action = LoginFragmentDirections.actionLoginFragmentToDashboardFragment()
-        findNavController().navigate(action)
+    private fun navigateToLoginScreen() {
+        findNavController().popBackStack()
     }
 
     override fun onDestroyView() {

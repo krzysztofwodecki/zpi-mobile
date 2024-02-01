@@ -2,15 +2,22 @@ package com.example.gatherpoint
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
+import android.util.Log
 import android.view.View
 import android.view.animation.AnticipateInterpolator
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import com.example.gatherpoint.network.RetrofitHelper
+import com.example.gatherpoint.utils.Prefs
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -34,12 +41,16 @@ class MainActivity : AppCompatActivity() {
         splashScreen.setOnExitAnimationListener { splashScreenView ->
             startSplashScreenExitAnimation(splashScreenView)
         }
-
     }
 
     private fun processBootData() = lifecycleScope.launch(Dispatchers.IO) {
-        //if user is logged in pass another fragment as a destination
-        setNavigationGraph(R.id.loginFragment)
+        setNavigationGraph(
+            if (Prefs(this@MainActivity).token != null) {
+                R.id.dashboardFragment
+            } else {
+                R.id.loginFragment
+            }
+        )
         canExitSplashScreen = true
     }
 
